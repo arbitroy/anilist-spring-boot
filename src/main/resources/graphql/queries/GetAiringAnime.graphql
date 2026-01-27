@@ -1,0 +1,8 @@
+query AiringAnime($page: Int) {
+  Page(page: $page, perPage: 10) {
+    media(type: ANIME, status: RELEASING) {
+      id title { romaji } episodes status
+      nextAiringEpisode { episode airingAt }
+    }
+  }
+}

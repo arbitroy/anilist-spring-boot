@@ -1,0 +1,8 @@
+query TrendingAnime($page: Int) {
+  Page(page: $page, perPage: 10) {
+    media(type: ANIME, sort: TRENDING_DESC) {
+      id title { romaji } episodes status
+      averageScore coverImage { large }
+    }
+  }
+}

@@ -3,20 +3,29 @@ spring:
     name: anilist-spring-boot
   data:
     redis:
-      host: localhost
       port: 6379
+      host: localhost
+      timeout: 2000ms
+      jedis:
+        pool:
+          max-active: 8
+          max-idle: 8
 
 server:
   port: 8080
   servlet:
     context-path: /api
 
+# AniList Configuration
 anilist:
   graphql:
     endpoint: https://graphql.anilist.co
     timeout-seconds: 10
+    retry-attempts: 3
+    retry-delay-ms: 1000
 
+# Logging
 logging:
   level:
     root: INFO
-    com.example.anilist: DEBUG
+    "[com.example.anilist]": DEBUG

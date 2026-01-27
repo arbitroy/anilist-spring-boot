@@ -12,13 +12,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnimeSearchResponse implements Serializable{
+public class CharacterDTO implements Serializable{
     private static final long serialVersionUID = 1L;
-    private Integer pageInfo;
-    private List<AnimeDTO> media;
-    private Integer totalResults;
-    
-    public boolean hasResults() {
-        return media != null && !media.isEmpty();
-    }
+    private Integer id;
+    private String name;
+    private String imageUrl;
+    private String description;
+    private List<String> roles;
+    private Integer popularity;
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,7 +13,10 @@ import java.util.List;
 @Builder  // Lombok: generates a builder for creating objects
 @NoArgsConstructor  // Lombok: generates no-arg constructor
 @AllArgsConstructor  // Lombok: generates all-arg constructor
-public class AnimeDTO {
+public class AnimeDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L; 
+
     private Integer id;
     private String romaji;
     private String english;
