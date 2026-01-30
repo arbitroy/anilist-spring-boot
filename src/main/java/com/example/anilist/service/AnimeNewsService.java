@@ -1,6 +1,9 @@
 package com.example.anilist.service;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,25 +13,28 @@ import java.util.*;
 @Slf4j
 @Service
 public class AnimeNewsService {
-    private final RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    
+
     public AnimeNewsService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
-    
+
     /**
      * Fetch from RSS2JSON (converts ANN RSS to JSON)
      */
+    @Cacheable(value = "annNews", cacheManager = "cacheManager")
     public List<Map<String, Object>> fetchANNNews() {
         try {
             String url = "https://api.rss2json.com/v1/api.json" +
-                "?rss_url=https://www.animenewsnetwork.com/news/rss.xml";
-            
+                    "?rss_url=https://www.animenewsnetwork.com/news/rss.xml";
+            log.info("Fetching ANN news from URL: {}", url);
+
             String response = restTemplate.getForObject(url, String.class);
             JsonNode root = objectMapper.readTree(response);
-            
+
             List<Map<String, Object>> news = new ArrayList<>();
             root.get("items").forEach(item -> {
                 Map<String, Object> newsItem = new HashMap<>();
@@ -40,7 +46,7 @@ public class AnimeNewsService {
                 newsItem.put("image", item.get("image").asText());
                 news.add(newsItem);
             });
-            
+
             log.info("✓ Fetched {} ANN news items", news.size());
             return news;
         } catch (Exception e) {
@@ -48,17 +54,18 @@ public class AnimeNewsService {
             return List.of();
         }
     }
-    
+
     /**
      * Fetch from Reddit r/anime
      */
+    @Cacheable(value = "redditNews", cacheManager = "cacheManager")
     public List<Map<String, Object>> fetchRedditNews() {
         try {
             String url = "https://www.reddit.com/r/anime/new.json?limit=10";
-            
+
             String response = restTemplate.getForObject(url, String.class);
             JsonNode root = objectMapper.readTree(response);
-            
+
             List<Map<String, Object>> news = new ArrayList<>();
             root.get("data").get("children").forEach(child -> {
                 JsonNode data = child.get("data");
@@ -72,7 +79,7 @@ public class AnimeNewsService {
                 newsItem.put("source", "Reddit r/anime");
                 news.add(newsItem);
             });
-            
+
             log.info("✓ Fetched {} Reddit posts", news.size());
             return news;
         } catch (Exception e) {
@@ -80,22 +87,23 @@ public class AnimeNewsService {
             return List.of();
         }
     }
-    
+
     /**
      * Get combined news from both sources
      */
+    @Cacheable(value = "combinedNews", cacheManager = "cacheManager")
     public List<Map<String, Object>> getCombinedNews() {
         List<Map<String, Object>> allNews = new ArrayList<>();
         allNews.addAll(fetchANNNews());
         allNews.addAll(fetchRedditNews());
-        
+
         // Sort by date (most recent first)
         allNews.sort((a, b) -> {
             long dateA = Long.parseLong(a.get("pubDate").toString());
             long dateB = Long.parseLong(b.get("pubDate").toString());
             return Long.compare(dateB, dateA);
         });
-        
+
         return allNews;
     }
 }
