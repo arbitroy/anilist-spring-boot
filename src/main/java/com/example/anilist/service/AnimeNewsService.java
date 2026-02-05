@@ -1,14 +1,21 @@
 package com.example.anilist.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.*;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -75,7 +82,7 @@ public class AnimeNewsService {
     public List<Map<String, Object>> fetchRedditNews() {
         try {
             log.info("Starting Reddit news fetch...");
-            String url = "https://www.reddit.com/r/anime/new.json?limit=10";
+            String url = "https://www.reddit.com/r/anime/new.json?limit=20";
 
             log.info("Calling Reddit API...");
             String response = restTemplate.getForObject(url, String.class);

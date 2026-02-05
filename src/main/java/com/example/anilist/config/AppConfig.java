@@ -9,7 +9,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -24,10 +23,12 @@ public class AppConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(1)) // Cache for 1 hour
+                .entryTtl(Duration.ofSeconds(20)) // Cache for 1 hour
                 .disableCachingNullValues();
 
-        return RedisCacheManager.create(connectionFactory);
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(config)
+                .build();
     }
 
 }
