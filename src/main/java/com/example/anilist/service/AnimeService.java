@@ -33,7 +33,6 @@ public class AnimeService {
      */
     @Cacheable(value = "animeSearch", key = "#query + '-' + #page")
     public AnimeSearchResponse searchAnime(String query, Integer page) {
-        log.info("Searching for anime: {}", query);
 
         String graphqlQuery = queryLoader.getQuery("SearchAnime");
         Map<String, Object> variables = Map.of(
