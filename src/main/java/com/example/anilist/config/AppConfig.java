@@ -39,7 +39,7 @@ public class AppConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(3600)) // Cache for 1 hour
+                .entryTtl(Duration.ofSeconds(360)) // Cache for 360 seconds (6 minutes)
                 .disableCachingNullValues();
 
         return RedisCacheManager.builder(connectionFactory)

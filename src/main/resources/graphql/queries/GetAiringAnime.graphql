@@ -1,7 +1,18 @@
 query AiringAnime($page: Int) {
   Page(page: $page, perPage: 10) {
+    pageInfo { total }
     media(type: ANIME, status: RELEASING) {
-      id title { romaji } episodes status
+      id
+      title { romaji english native }
+      episodes
+      status
+      averageScore
+      popularity
+      description
+      coverImage { large }
+      genres
+      season
+      seasonYear
       nextAiringEpisode { episode airingAt }
     }
   }

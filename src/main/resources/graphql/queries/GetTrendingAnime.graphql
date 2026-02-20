@@ -1,8 +1,24 @@
 query TrendingAnime($page: Int) {
   Page(page: $page, perPage: 10) {
+    pageInfo { total }
     media(type: ANIME, sort: TRENDING_DESC) {
-      id title { romaji } episodes status
-      averageScore coverImage { large }
+      id
+      title { romaji english native }
+      episodes
+      status
+      averageScore
+      popularity
+      description
+      bannerImage
+      coverImage { large }
+      genres
+      season
+      seasonYear
+      format
+      source
+      startDate { year month day }
+      endDate { year month day }
+      studios { nodes { name } }
     }
   }
 }
