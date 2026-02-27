@@ -111,7 +111,6 @@ public class AnimeService {
 
     private AnimeSearchResponse parseSearchResponse(JsonNode pageNode) {
         JsonNode pageInfo = pageNode.get("Page");
-        System.out.println(pageInfo);
 
         List<AnimeDTO> animes = new ArrayList<>();
         if (pageInfo.has("media")) {
